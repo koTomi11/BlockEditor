@@ -4,6 +4,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
-add_executable (W3Deditor "W3Deditor.cpp" "W3Deditor.h")
+
+add_executable(W3Deditor main.cpp)
 
 # TODO: Add tests and install targets if needed.
