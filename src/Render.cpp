@@ -32,7 +32,7 @@ void Render::render()
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * 4, &vertices[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() , &vertices[0]);
 	for (DrawCmd cmd : cmds)
 	{
 		glDrawArrays(cmd.drawMode, cmd.first, cmd.count);

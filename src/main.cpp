@@ -4,6 +4,8 @@
 
 #include "Render.h"
 
+#include "MapBuilder.h"
+
 // Függvény a billentyűzet figyelésére (ESC gombra bezárja az ablakot)
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -50,6 +52,11 @@ int main() {
 	Render render;
 	render.initalize();
 
+	MapBuilder mb;
+	mb.save("bazdmeg.map");
+
+	std::cout << MapUtil::stringPairToString("fasz", "szopo") <<std::endl;
+
 	// 4. Fő renderelési ciklus
 	while (!glfwWindowShouldClose(window)) {
 		// Gombnyomások kezelése
@@ -59,14 +66,14 @@ int main() {
 		glClearColor(0.1f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 20; i++)
 		{
-			render.drawLine(i / 10.0f, 0, i / 10.0f, 0.5);
+			//render.drawLine(i / 50.0f, 0, i / 20.0f, 0.5);
 		}
 
 	
 
-		render.render();
+		//render.render();
 
 		// Pufferek cseréje és események lekérdezése
 		glfwSwapBuffers(window);

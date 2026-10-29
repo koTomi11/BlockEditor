@@ -3,6 +3,12 @@
 #
 cmake_minimum_required (VERSION 3.10)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+
+
 include(FetchContent)
 FetchContent_Declare(
     glfw
@@ -16,6 +22,15 @@ FetchContent_Declare(
     GIT_TAG        v0.1.36 # A stabil v0 verzió kiválóan beépül a CMake-be
 )
 
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG        master # Vagy megadhatsz fix verziót is, pl. "1.0.1"
+)
+
+FetchContent_Populate(glm)
+
+
 # Itt megadjuk a GLAD konfigurációját, mielőtt beolvassuk
 set(GLAD_GL_VERSION "4.6" CACHE STRING "" FORCE)
 set(GLAD_PROFILE "core" CACHE STRING "OpenGL profile")
@@ -28,18 +43,23 @@ if(NOT glad_POPULATED)
     add_subdirectory(${glad_SOURCE_DIR} ${glad_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
+
+
 FetchContent_GetProperties(glfw)
 if(NOT glfw_POPULATED)
     FetchContent_Populate(glfw)
     add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR})
 endif()
 
-add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp)
+add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/MapBuilder.h src/MapBuilder.cpp src/MapUtil.h
+	src/Shader.h src/Shader.cpp)
 
 target_include_directories(W3Deditor PRIVATE ${glfw_SOURCE_DIR}/include
 											 ${glad_SOURCE_DIR}/include)
 
 # 3. Összelinkeljük a programot a GLFW könyvtárral
 target_link_libraries(W3Deditor PRIVATE glfw glad)
+target_include_directories(W3Deditor PRIVATE "${glm_SOURCE_DIR}")
 
-
+set_target_properties(W3Deditor PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
