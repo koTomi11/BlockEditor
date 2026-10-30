@@ -27,7 +27,7 @@ GLuint Shader::loadShader(std::string src, GLuint type)
 
 	std::ifstream file(src2);
 	std::string line;
-	// Beolvasás soronként, amíg a fájl végére nem érünk
+	
 	while (std::getline(file, line)) {
 		src3.append(line);
 		src3.append("\n");

@@ -38,7 +38,7 @@ set(STB_IMAGE_DIR "${CMAKE_BINARY_DIR}/external/stb")
 if(NOT EXISTS "${STB_IMAGE_DIR}/stb_image.h")
     message(STATUS "stb_image.h letöltése a GitHubról...")
     file(DOWNLOAD 
-        "https://github.com/nothings/stb.git"
+        "raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_image.h"
         "${STB_IMAGE_DIR}/stb_image.h"
         SHOW_PROGRESS
     )
