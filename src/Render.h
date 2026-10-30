@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 #include <vector>
-
+#include "Shader.h"
 
 
 struct DrawCmd
@@ -18,7 +18,7 @@ class Render
 {
 
 public:
-
+	Shader* shader;
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_ibo;

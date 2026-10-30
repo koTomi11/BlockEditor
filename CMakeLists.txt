@@ -28,6 +28,23 @@ FetchContent_Declare(
     GIT_TAG        master # Vagy megadhatsz fix verziót is, pl. "1.0.1"
 )
 
+
+
+# 3. Letöltjük a projekt konfigurálásakor
+
+set(STB_IMAGE_DIR "${CMAKE_BINARY_DIR}/external/stb")
+
+# Ha még nem létezik a fájl, a CMake letölti közvetlenül a GitHubról
+if(NOT EXISTS "${STB_IMAGE_DIR}/stb_image.h")
+    message(STATUS "stb_image.h letöltése a GitHubról...")
+    file(DOWNLOAD 
+        "https://github.com/nothings/stb.git"
+        "${STB_IMAGE_DIR}/stb_image.h"
+        SHOW_PROGRESS
+    )
+endif()
+
+
 FetchContent_Populate(glm)
 
 
@@ -56,6 +73,8 @@ add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/MapBuilder
 
 target_include_directories(W3Deditor PRIVATE ${glfw_SOURCE_DIR}/include
 											 ${glad_SOURCE_DIR}/include)
+
+ target_include_directories(W3Deditor PRIVATE ${STB_IMAGE_DIR})
 
 # 3. Összelinkeljük a programot a GLFW könyvtárral
 target_link_libraries(W3Deditor PRIVATE glfw glad)

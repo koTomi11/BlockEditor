@@ -6,6 +6,7 @@
 void Render::initalize()
 {
 
+	shader = new Shader("Shader.vs", "Shader.fs");
 	
 	glGenVertexArrays(1, &m_vao);
 	glBindVertexArray(m_vao);
@@ -27,7 +28,7 @@ void Render::initalize()
 
 void Render::render()
 {
-
+	shader->bind();
 	glBindVertexArray(m_vao);
 	glEnableVertexAttribArray(0);
 

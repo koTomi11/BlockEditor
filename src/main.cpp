@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+//#define STB_IMAGE_IMPLEMENTATION
+//#include <stb_image.h>
+
 #include "Render.h"
 
 #include "MapBuilder.h"
@@ -66,14 +69,14 @@ int main() {
 		glClearColor(0.1f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 2; i++)
 		{
-			//render.drawLine(i / 50.0f, 0, i / 20.0f, 0.5);
+			render.drawLine(i / 50.0f, 0, i / 20.0f, 0.5);
 		}
 
 	
 
-		//render.render();
+		render.render();
 
 		// Pufferek cseréje és események lekérdezése
 		glfwSwapBuffers(window);
