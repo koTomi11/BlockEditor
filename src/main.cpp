@@ -52,12 +52,14 @@ int main() {
 	glViewport(0, 0, 800, 600);
 
 	Render render;
-	render.initalize();
+	render.initalize(800, 600);
 
 	MapBuilder mb;
 	mb.save("bazdmeg.map");
 
 	std::cout << MapUtil::stringPairToString("fasz", "szopo") <<std::endl;
+
+	int te = render.loadImage("texture.jpg");
 	
 	while (!glfwWindowShouldClose(window)) {
 		
@@ -66,16 +68,22 @@ int main() {
 		
 		glClearColor(0.1f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		
-		for (int i = 0; i < 10; i++)
-		{
-		
-			//render.drawLine(i *10 , 300, 300, 100);
-		}
 
-		render.drawTriangle(0, 0, 400, 30, 500, 500);
+	
 
-		render.render();
+		//render.drawImage(te, 50, 50, 70, 80);
+
+		render.setColor(20, 100, 10);
+		render.fillRect(50, 50, 50, 50);
+
+		render.setColor(20, 50, 100);
+		render.fillRect(300, 50, 50, 50);
+
+		render.drawImage(te, 200, 200, 80, 40);
+
+		render.drawLine(380, 380, 350, 350);
+
+		render.endFrame();
 
 		
 		glfwSwapBuffers(window);
