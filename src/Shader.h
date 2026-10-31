@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <string>
 #include "Shader.h"
+#include <glm/glm.hpp>
 
 class Shader
 {
@@ -18,5 +19,7 @@ public:
 	GLuint loadShader(std::string src, GLuint type);
 	void bind();
 	void unbind();
+
+	void setProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar);
 
 };

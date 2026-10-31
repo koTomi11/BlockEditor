@@ -1,6 +1,10 @@
 #include "Shader.h"
 
 #include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <iostream>
 
 Shader::Shader(std::string vs, std::string fs)
 {
@@ -54,4 +58,15 @@ void Shader::bind()
 void Shader::unbind()
 {
 	glUseProgram(0);
+}
+
+void Shader::setProjectionMatrix(float left, float right, float bottom, float top, float zNear, float zFar)
+{
+	
+	glm::mat4 projMat = glm::ortho(left, right, bottom, top, zNear, zFar);
+	GLuint location = glGetUniformLocation(m_program, "projMatrix");
+
+	bind();
+	glUniformMatrix4fv(location, 1, GL_FALSE, &projMat[0][0]);
+
 }
