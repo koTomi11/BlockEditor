@@ -39,6 +39,8 @@ void Brush::init()
 
 }
 
+
+
 void Brush::initCube(int size)
 {
 	
@@ -61,6 +63,14 @@ void Brush::move(int x, int y, int z)
 		p.move(x, y, z);
 
 	}
+}
+
+void MapBuilder::addBlock(int x, int y)
+{
+	Brush b;
+	b.initCube(100);
+	b.move(x, y, 0);
+	brushs.push_back(b);
 }
 
 void MapBuilder::save(std::string fileName)

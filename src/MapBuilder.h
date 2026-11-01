@@ -87,6 +87,8 @@ public:
 
 	std::vector<Brush> brushs;
 
+	void addBlock(int x, int y);
+
 	void save(std::string fileName);
 
 };

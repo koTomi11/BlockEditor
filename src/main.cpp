@@ -12,6 +12,7 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
 
+#include "editor/Editor.h"
 
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -73,6 +74,12 @@ int main() {
 	std::cout << MapUtil::stringPairToString("fasz", "szopo") <<std::endl;
 
 	int te = render.loadImage("texture.jpg");
+
+	Editor editor;
+
+	for(int i=0;i<30;i++)
+	editor.addBlock(i, 5, Block());
+	editor.save("gecibe.map");
 
 	while (!glfwWindowShouldClose(window)) {
 		
