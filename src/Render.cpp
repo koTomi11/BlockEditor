@@ -23,11 +23,8 @@ void Render::initalize(int width, int height)
 	glGenBuffers(1, &m_vbo);
 	glGenBuffers(1, &m_ibo);
 
-
-
-
-	allocateBuffer(m_vbo, GL_ARRAY_BUFFER, GL_STREAM_DRAW, nullptr, 1024 * 20);
-	allocateBuffer(m_ibo, GL_ELEMENT_ARRAY_BUFFER, GL_STREAM_DRAW, nullptr, 512);
+	allocateBuffer(m_vbo, GL_ARRAY_BUFFER, GL_STREAM_DRAW, nullptr, 1024 * 100);
+	allocateBuffer(m_ibo, GL_ELEMENT_ARRAY_BUFFER, GL_STREAM_DRAW, nullptr, 1024 * 10);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -40,6 +37,9 @@ void Render::initalize(int width, int height)
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+
+	lineWidth = 2;
+	m_r = 0; m_g = 0; m_b = 0;
 
 }
 
@@ -76,6 +76,15 @@ void Render::endFrame()
 	cmds.clear();
 }
 
+void Render::drawRect(int x, int y, int width, int height)
+{
+	fillRect(x, y, lineWidth, height);
+	fillRect(x, y, width, lineWidth);
+
+	fillRect(x + width, y, lineWidth, height);
+	fillRect(x, y + height, width + lineWidth, lineWidth);
+}
+
 void Render::drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2)
 {
 
@@ -95,10 +104,51 @@ void Render::drawTriangle(float x0, float y0, float x1, float y1, float x2, floa
 
 }
 
-void Render::drawLine(int x0, int y0, int x1, int y1)
+void Render::fillCircle(int x, int y, int r)
 {
 
-	float v = 2;
+
+	int segments = 24;
+
+	DrawCmd cmd;
+	cmd.count = segments * 3;
+	cmd.first = m_indices.size();
+	cmd.drawMode = GL_TRIANGLES;
+	cmd.texture = 0;
+	cmds.push_back(cmd);
+
+	if (segments < 3) segments = 3;
+
+	// Kezdõ index eltolás (ha már vannak elemek a pufferben)
+	uint32_t baseIndex = m_vertices.size();
+
+	// 1. Középponti vertex hozzáadása
+	m_vertices.push_back(Vertex(x,y,m_r,m_g,m_b));
+
+	// 2. Kerületi vertexek hozzáadása
+	for (int i = 0; i < segments; ++i) {
+		float angle = i * (2.0f * 3.14159265f / segments);
+		float vx = x + cosf(angle) * r;
+		float vy = y + sinf(angle) * r;
+		m_vertices.push_back(Vertex(vx, vy, m_r, m_g, m_b));
+
+		
+	}
+
+	// 3. Indexek legenerálása (Triangle List-té alakítás)
+	for (int i = 0; i < segments; ++i) {
+		uint32_t currentOuter = baseIndex + 1 + i;
+		uint32_t nextOuter = baseIndex + 1 + ((i + 1) % segments);
+
+		m_indices.push_back(baseIndex);    // Középpont
+		m_indices.push_back(currentOuter); // Aktuális külsõ pont
+		m_indices.push_back(nextOuter);    // Következõ külsõ pont
+	}
+}
+
+
+void Render::drawLine(int x0, int y0, int x1, int y1)
+{
 
 	float dx = x1 - x0;
 	float dy = y1 - y0;
@@ -108,8 +158,8 @@ void Render::drawLine(int x0, int y0, int x1, int y1)
 	float nx = -dy / length;
 	float ny = dy / length;
 
-	float offsetX = nx * (v * 0.5f);
-	float offsetY = ny * (v * 0.5f);
+	float offsetX = nx * (lineWidth * 0.5f);
+	float offsetY = ny * (lineWidth * 0.5f);
 
 	DrawCmd cmd;
 	cmd.count = 6;
@@ -178,14 +228,14 @@ void Render::fillRect(int x, int y, int width, int height)
 
 }
 
-void Render::fillOval(int x, int y, int width, int height)
-{
-
-}
-
 void Render::setColor(unsigned char r, unsigned char g, unsigned char b)
 {
 	m_r = r; m_g = g; m_b = b;
+}
+
+void Render::setLineWidth(int s)
+{
+	lineWidth = s;
 }
 
 void Render::allocateBuffer(GLuint buffer, GLuint target, GLuint usage, void* data, unsigned int size)

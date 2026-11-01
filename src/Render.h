@@ -51,22 +51,24 @@ public:
 	std::vector<unsigned int> m_indices;
 
 	unsigned char m_r, m_g, m_b;
+	unsigned int lineWidth;
 
 	void initalize(int width, int height);
 
 	
 	void drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2);
 	void drawLine(int x0, int y0, int x1, int y2);
-
+	void drawRect(int x, int y, int width, int height);
 
 	int loadImage(std::string fileName);
 
 	 void drawImage(int id, int x, int y, int width, int height);
 
 	 void fillRect(int x, int y, int width, int height);
-	 void fillOval(int x, int y, int width, int height);
+	 void fillCircle(int x, int y, int r);
 
 	 void setColor(unsigned char r, unsigned char g, unsigned char b);
+	 void setLineWidth(int s);
 
 	 void endFrame();
 

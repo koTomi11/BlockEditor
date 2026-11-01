@@ -9,6 +9,9 @@
 
 #include "MapBuilder.h"
 
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb_truetype.h"
+
 
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -55,12 +58,22 @@ int main() {
 	render.initalize(800, 600);
 
 	MapBuilder mb;
+
+	
+	for (int i = 0; i < 3; i++)
+	{
+		Brush b;
+		b.initCube(500);
+		b.move(i * 600, 0, 0);
+		mb.brushs.push_back(b);
+	}
+	
 	mb.save("bazdmeg.map");
 
 	std::cout << MapUtil::stringPairToString("fasz", "szopo") <<std::endl;
 
 	int te = render.loadImage("texture.jpg");
-	
+
 	while (!glfwWindowShouldClose(window)) {
 		
 		processInput(window);
@@ -73,16 +86,14 @@ int main() {
 
 		//render.drawImage(te, 50, 50, 70, 80);
 
-		render.setColor(20, 100, 10);
+
+		
+		render.setColor(230, 23, 230);
+		
+
+		render.fillCircle(400, 400, 100);
+		render.setColor(100, 0, 12);
 		render.fillRect(50, 50, 50, 50);
-
-		render.setColor(20, 50, 100);
-		render.fillRect(300, 50, 50, 50);
-
-		render.drawImage(te, 200, 200, 80, 40);
-
-		render.drawLine(380, 380, 350, 350);
-
 		render.endFrame();
 
 		

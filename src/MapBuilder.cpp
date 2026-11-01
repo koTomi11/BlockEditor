@@ -3,16 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-Plane::Plane(int px0, int py0, int pz0,
-	int px1, int py1, int pz1,
-	int px2, int py2, int pz2,
-	std::string texture)
-{
-	m_point1 = glm::vec3(px0, py0, pz0);
-	m_point2 = glm::vec3(px1, py1, pz1);
-	m_point2 = glm::vec3(px1, py1, pz1);
-	m_texture = texture;
-}
+
 
 std::string Plane::toString()
 {
@@ -48,6 +39,30 @@ void Brush::init()
 
 }
 
+void Brush::initCube(int size)
+{
+	
+	float h = size / 2.0f;
+
+	planes.push_back(Plane(-h,h,h,   h,h,h,   h,-h,h,   "NONE",    1,0,0,0, 0,-1,0,0, 0,1,1));
+	planes.push_back(Plane(-h,-h,-h, h,-h,-h, h,h,-h, "NONE",      1,0,0,0, 0,-1,0,0, 0,1,1));
+	planes.push_back(Plane(-h,h,h,   -h,-h,h,   -h,-h,-h,  "NONE", 0,1,0,0, 0,0,-1,0, 0,1,1));
+
+	planes.push_back(Plane(h,h,-h,  h,-h,-h, h,-h,h, "NONE",        0,1,0,0, 0,0,-1,0, 0,1,1));
+	planes.push_back(Plane(h,h,h,   -h,h,h,  -h,h,-h,  "NONE",      1,0,0,0, 0,0,-1,0, 0,1,1));
+	planes.push_back(Plane(h,-h,-h,  -h,-h,-h,  -h,-h,h, "NONE",    1,0,0,0, 0,0,-1,0, 0,1,1));
+
+}
+
+void Brush::move(int x, int y, int z)
+{
+	for (Plane& p : planes)
+	{
+		p.move(x, y, z);
+
+	}
+}
+
 void MapBuilder::save(std::string fileName)
 {
 	
@@ -63,11 +78,14 @@ void MapBuilder::save(std::string fileName)
 		file << "{\n";
 		file << MapUtil::stringPairToString("classname", "worldspawn") << "\n";
 		file << MapUtil::stringPairToString("mapversion", "220") << "\n";
-		file << MapUtil::stringPairToString("wad", "") << "\n";
+		file << MapUtil::stringPairToString("wad", "\\hammer\\tools\\zhlt\\zhlt.wad;\\hammer\\tools\\zhlt\\map.wad") << "\n";
 
+		for (int i = 0; i < brushs.size(); i++)
+		{
+			file << brushs[i].toString() << "\n";
+		}
 
-
-		file << "}";
+		file << "}\n";
 		
 		file.close();
 	}

@@ -45,6 +45,17 @@ if(NOT EXISTS "${STB_IMAGE_DIR}/stb_image.h")
 endif()
 
 
+# Ha még nem létezik a fájl, a CMake letölti közvetlenül a GitHubról
+if(NOT EXISTS "${STB_IMAGE_DIR}/stb_truetype.h")
+    message(STATUS "stb_truetype.h letöltése a GitHubról...")
+    file(DOWNLOAD 
+        "stb_truetypehttps://raw.githubusercontent.com/nothings/stb/refs/heads/master/stb_truetype.h"
+        "${STB_IMAGE_DIR}/stb_truetype.h"
+        SHOW_PROGRESS
+    )
+endif()
+
+
 FetchContent_Populate(glm)
 
 
