@@ -1,9 +1,10 @@
 #include "Render.h"
 #include <math.h>
 
+
+
 #include <iostream>
 #include <stb_image.h>
-
 #include <fstream>
 
 void Render::initalize(int width, int height)
@@ -12,6 +13,8 @@ void Render::initalize(int width, int height)
 	shader = new Shader("Shader.vs", "Shader.fs");
 	shader->setProjectionMatrix(0.0f, width, height, 0.0f, -1.0f, 1.0f);
 
+	unsigned char p[3] = {255,255,255};
+	m_whiteTexture = loadImage(p, 1, 1, 3);
 
 	GLuint text = loadTexture("fasza.jpg");
 
@@ -92,6 +95,7 @@ void Render::drawTriangle(float x0, float y0, float x1, float y1, float x2, floa
 	cmd.count = 3;
 	cmd.first = m_indices.size();
 	cmd.drawMode = GL_TRIANGLES;
+	cmd.texture = m_whiteTexture;
 	cmds.push_back(cmd);
 
 	unsigned int base = m_vertices.size();
@@ -106,15 +110,13 @@ void Render::drawTriangle(float x0, float y0, float x1, float y1, float x2, floa
 
 void Render::fillCircle(int x, int y, int r)
 {
-
-
 	int segments = 24;
 
 	DrawCmd cmd;
 	cmd.count = segments * 3;
 	cmd.first = m_indices.size();
 	cmd.drawMode = GL_TRIANGLES;
-	cmd.texture = 0;
+	cmd.texture = m_whiteTexture;
 	cmds.push_back(cmd);
 
 	if (segments < 3) segments = 3;
@@ -132,7 +134,6 @@ void Render::fillCircle(int x, int y, int r)
 		float vy = y + sinf(angle) * r;
 		m_vertices.push_back(Vertex(vx, vy, m_r, m_g, m_b));
 
-		
 	}
 
 	// 3. Indexek legenerálása (Triangle List-té alakítás)
@@ -165,7 +166,7 @@ void Render::drawLine(int x0, int y0, int x1, int y1)
 	cmd.count = 6;
 	cmd.first = m_indices.size();
 	cmd.drawMode = GL_TRIANGLES;
-	cmd.texture = 0;
+	cmd.texture = m_whiteTexture;
 	cmds.push_back(cmd);
 
 	unsigned int base = m_vertices.size();
@@ -180,7 +181,43 @@ void Render::drawLine(int x0, int y0, int x1, int y1)
 	
 }
 
-int Render::loadImage(std::string fileName)
+void Render::drawString(int x, int y, std::string str)
+{
+	
+	Font font = m_fonts[0];
+
+	glm::vec2 v[4], t[4];
+	float posX = x;
+
+	DrawCmd cmd;
+	cmd.count = str.length() * 6;
+	cmd.first = m_indices.size();
+	cmd.drawMode = GL_TRIANGLES;
+	cmd.texture = font.m_atlas;
+	cmds.push_back(cmd);
+
+	
+
+	for (int i=0;i<str.length();i++)
+	{
+
+		char c = str[i];
+		font.getVerticesOfChar(c, 1, &posX, y, v, t);
+		unsigned int base = m_vertices.size();
+		m_vertices.push_back(Vertex(v[0].x, v[0].y, t[0].x, t[0].y, m_r, m_g, m_b));
+		m_vertices.push_back(Vertex(v[1].x, v[1].y, t[1].x, t[1].y, m_r, m_g, m_b));
+		m_vertices.push_back(Vertex(v[2].x, v[2].y, t[2].x, t[2].y, m_r, m_g, m_b));
+		m_vertices.push_back(Vertex(v[3].x, v[3].y, t[3].x, t[3].y, m_r, m_g, m_b));
+
+		m_indices.push_back(base + 0); m_indices.push_back(base + 1); m_indices.push_back(base + 3);
+		m_indices.push_back(base + 1); m_indices.push_back(base + 2); m_indices.push_back(base + 3);
+	}
+
+	
+
+}
+
+unsigned int Render::loadImage(std::string fileName)
 {
 	return (int) loadTexture(fileName);
 }
@@ -212,7 +249,7 @@ void Render::fillRect(int x, int y, int width, int height)
 	cmd.count = 6;
 	cmd.first = m_indices.size();
 	cmd.drawMode = GL_TRIANGLES;
-	cmd.texture = 0;
+	cmd.texture = m_whiteTexture;
 	cmds.push_back(cmd);
 
 	unsigned int base = m_vertices.size();
@@ -224,7 +261,6 @@ void Render::fillRect(int x, int y, int width, int height)
 
 	m_indices.push_back(base + 0); m_indices.push_back(base + 1); m_indices.push_back(base + 3);
 	m_indices.push_back(base + 1); m_indices.push_back(base + 2); m_indices.push_back(base + 3);
-
 
 }
 
@@ -246,49 +282,51 @@ void Render::allocateBuffer(GLuint buffer, GLuint target, GLuint usage, void* da
 
 }
 
+unsigned int Render::loadFont(std::string fileName)
+{
+	Font f(this, fileName);
+	m_fonts.push_back(f);
+	m_fontAtlas = f.m_atlas;
+	return m_fonts.size() - 1;
+}
+
+unsigned int Render::loadImage(unsigned char* pixels, int width, int height, int nComps)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	GLenum format;
+	if (nComps == 1)      format = GL_RED;
+	else if (nComps == 3) format = GL_RGB;
+	else if (nComps == 4) format = GL_RGBA;
+
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	return textureID;
+}
+
 GLuint Render::loadTexture(std::string fileName)
 {
 
 	std::string path("F:\\Users\\asdf\\Desktop\\textures\\");
 	path.append(fileName);
 
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-
 	int width, height, nrComponents;
-
-	
 
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
 	if (data) {
-		
-		GLenum format;
-		if (nrComponents == 1)      format = GL_RED;
-		else if (nrComponents == 3) format = GL_RGB;
-		else if (nrComponents == 4) format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-
-		
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-
-		
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		
-		stbi_image_free(data);
-		std::cout << "Texture sikeresen betoltve: " << path << std::endl;
+		return loadImage(data, width, height, nrComponents);
 	}
 	else {
 		std::cout << "Hiba: Nem sikerult a texturat betolteni a kovetkezo utvonalrol: " << path << std::endl;
 		stbi_image_free(data);
 	}
 
-	return textureID;
+	return 0;
 }

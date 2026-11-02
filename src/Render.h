@@ -5,6 +5,8 @@
 #include "Shader.h"
 #include "IRender2d.h"
 
+#include "Font.h"
+
 struct Vertex
 {
 	float m_x, m_y;
@@ -13,12 +15,17 @@ struct Vertex
 
 	Vertex(float x, float y)
 	{
-		m_x = x; m_y = y; m_u = x / 500.0f; m_v = y / 700.0f; m_r = 0; m_g = 0; m_b = 0; m_a = 0;
+		m_x = x; m_y = y; m_u = x / 500.0f; m_v = y / 700.0f; m_r = 255; m_g = 255; m_b = 255; m_a = 255;
 	}
 
 	Vertex(float x, float y, float u, float v)
 	{
-		m_x = x; m_y = y; m_u = u; m_v = v; m_r = 0; m_g = 0; m_b = 0; m_a = 0;
+		m_x = x; m_y = y; m_u = u; m_v = v; m_r = 255; m_g = 255; m_b = 255; m_a = 255;
+	}
+
+	Vertex(float x, float y, float u, float v, unsigned char r, unsigned char g, unsigned char b)
+	{
+		m_x = x; m_y = y; m_u = u; m_v = v; m_r = r; m_g = g; m_b = b; m_a = 255;
 	}
 
 	Vertex(float x, float y, unsigned char r, unsigned char g, unsigned char b)
@@ -46,9 +53,14 @@ public:
 	GLuint m_vao;
 	GLuint m_vbo;
 	GLuint m_ibo;
+	GLuint m_whiteTexture;
+	GLuint m_fontAtlas;
+	std::vector<Font> m_fonts;
 	std::vector<DrawCmd> cmds;
 	std::vector<Vertex> m_vertices;
 	std::vector<unsigned int> m_indices;
+
+	
 
 	unsigned char m_r, m_g, m_b;
 	unsigned int lineWidth;
@@ -59,8 +71,12 @@ public:
 	void drawTriangle(float x0, float y0, float x1, float y1, float x2, float y2);
 	void drawLine(int x0, int y0, int x1, int y2);
 	void drawRect(int x, int y, int width, int height);
+	void drawString(int x, int y, std::string str);
 
-	int loadImage(std::string fileName);
+	unsigned int loadImage(std::string fileName);
+	unsigned int loadFont(std::string fileName);
+
+	unsigned int loadImage(unsigned char* pixels, int width, int height, int nComps);
 
 	 void drawImage(int id, int x, int y, int width, int height);
 

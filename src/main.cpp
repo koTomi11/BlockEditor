@@ -8,10 +8,6 @@
 #include "Render.h"
 
 #include "MapBuilder.h"
-
-#define STB_TRUETYPE_IMPLEMENTATION
-#include "stb_truetype.h"
-
 #include "editor/Editor.h"
 
 void processInput(GLFWwindow* window) {
@@ -27,7 +23,6 @@ int main() {
 		return -1;
 	}
 
-	
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -81,6 +76,12 @@ int main() {
 	editor.addBlock(i, 5, Block());
 	editor.save("gecibe.map");
 
+	//render.loadFont("TannenbergFett.ttf");
+	render.loadFont("JetBrainsMono-Medium.ttf");
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	while (!glfwWindowShouldClose(window)) {
 		
 		processInput(window);
@@ -91,16 +92,20 @@ int main() {
 
 	
 
-		//render.drawImage(te, 50, 50, 70, 80);
+		render.drawImage(te, 50, 50, 70, 80);
 
-
+		render.setColor(0, 0, 0);
+		render.drawString( 0, 200, "faszomat!");
 		
 		render.setColor(230, 23, 230);
 		
+		
+		//render.fillCircle(400, 400, 100);
+		//render.setColor(100, 0, 12);
+	//	render.fillRect(50, 50, 50, 50);
 
-		render.fillCircle(400, 400, 100);
-		render.setColor(100, 0, 12);
-		render.fillRect(50, 50, 50, 50);
+		//render.drawImage(render.m_fontAtlas, 0, 0, 400, 400);
+
 		render.endFrame();
 
 		
