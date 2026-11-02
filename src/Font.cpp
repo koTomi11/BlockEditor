@@ -38,7 +38,7 @@ Font::Font(IRender2d* r, std::string fileName)
 
 	const int atlas_width = 512;
 	const int atlas_height = 512;
-	const float font_size = 32.0f;
+	const float font_size = 40.0f;
 
 	std::vector<unsigned char> atlas_pixels(atlas_width * atlas_height, 0);
 	
@@ -97,12 +97,13 @@ void Font::getVerticesOfChar(char ch, float size, float* posX, float posY, glm::
 
 	glm::vec2 glyphSize =
 	{
-		(packedChar->x1 - packedChar->x0) * pixelScale * size,
-		(packedChar->y1 - packedChar->y0) * pixelScale * size 
+		(packedChar->x1 - packedChar->x0),
+		(packedChar->y1 - packedChar->y0) 
 	};
 
-	glm::vec2 glyphBoundingBoxBottomLeft(*posX + (packedChar->xoff * pixelScale * size),
-		posY + (packedChar->yoff) * pixelScale * size);
+	glm::vec2 glyphBoundingBoxBottomLeft(
+		*posX + (packedChar->xoff * 2),
+		posY + (packedChar->yoff * 2));
 	
 
 	// The order of vertices of a quad goes top-right, top-left, bottom-left, bottom-right
@@ -125,6 +126,6 @@ void Font::getVerticesOfChar(char ch, float size, float* posX, float posY, glm::
 	memcpy(vPos, glyphVertices, sizeof(glm::vec2) * 4);
 	memcpy(texCoords, glyphTextureCoords, sizeof(glm::vec2) * 4);
 
-	*posX += packedChar->xadvance * pixelScale * size + 12 ;
+	*posX += packedChar->xadvance * 2;
 	
 }

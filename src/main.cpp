@@ -76,9 +76,10 @@ int main() {
 	editor.addBlock(i, 5, Block());
 	editor.save("gecibe.map");
 
-	//render.loadFont("TannenbergFett.ttf");
+	
 	render.loadFont("JetBrainsMono-Medium.ttf");
-
+	
+	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -90,12 +91,10 @@ int main() {
 		glClearColor(0.1f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-	
-
 		render.drawImage(te, 50, 50, 70, 80);
 
 		render.setColor(0, 0, 0);
-		render.drawString( 0, 200, "faszomat!");
+		render.drawString( 0, 200, "qwertzuiasd1234");
 		
 		render.setColor(230, 23, 230);
 		
