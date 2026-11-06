@@ -7,7 +7,8 @@
 
 #include "Render.h"
 
-#include "MapBuilder.h"
+
+#include "map_builder/MapBuilder.h"
 #include "editor/Editor.h"
 
 void processInput(GLFWwindow* window) {

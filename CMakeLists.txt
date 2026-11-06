@@ -79,7 +79,7 @@ if(NOT glfw_POPULATED)
     add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR})
 endif()
 
-add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/MapBuilder.h src/MapBuilder.cpp src/MapUtil.h
+add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/map_builder/MapBuilder.h src/map_builder/MapBuilder.cpp src/map_builder/MapUtil.h
 	src/Shader.h src/Shader.cpp src/IRender2d.h src/Font.h src/Font.cpp
 	
 	
@@ -87,11 +87,23 @@ add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/MapBuilder
 	src/editor/Editor.cpp
 	
 	)
+	
+	source_group(editor FILES 
+	src/editor/Editor.h
+	src/editor/Editor.cpp)
+	
+	source_group(map FILES
+	src/map_builder/MapBuilder.h
+	src/map_builder/MapBuilder.cpp
+	src/map_builder/MapUtil.h)
+	
 
 target_include_directories(W3Deditor PRIVATE ${glfw_SOURCE_DIR}/include
 											 ${glad_SOURCE_DIR}/include)
 
  target_include_directories(W3Deditor PRIVATE ${STB_IMAGE_DIR})
+ 
+
 
 # 3. Összelinkeljük a programot a GLFW könyvtárral
 target_link_libraries(W3Deditor PRIVATE glfw glad)
