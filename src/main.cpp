@@ -11,6 +11,8 @@
 #include "map_builder/MapBuilder.h"
 #include "editor/Editor.h"
 
+#include "Window.h"
+
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
@@ -19,30 +21,7 @@ void processInput(GLFWwindow* window) {
 
 int main() {
 	
-	if (!glfwInit()) {
-		std::cerr << "Nem sikerült inicializálni a GLFW-t!" << std::endl;
-		return -1;
-	}
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	
-	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL + GLAD Teszt", NULL, NULL);
-	if (!window) {
-		std::cerr << "Nem sikerült létrehozni a GLFW ablakot!" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
-
-	
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cerr << "Nem sikerült inicializálni a GLAD-et!" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
+	Window w(800, 600);
 
 	
 	std::cout << "OpenGL Verzio: " << glGetString(GL_VERSION) << std::endl;
@@ -84,9 +63,11 @@ int main() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	while (!glfwWindowShouldClose(window)) {
+	
+
+	while (!w.isClose()) {
 		
-		processInput(window);
+		w.poolEvent();
 
 		
 		glClearColor(0.1f, 0.3f, 0.4f, 1.0f);
@@ -100,17 +81,17 @@ int main() {
 		render.setColor(230, 23, 230);
 		
 		
-		//render.fillCircle(400, 400, 100);
-		//render.setColor(100, 0, 12);
-	//	render.fillRect(50, 50, 50, 50);
+		render.fillCircle(400, 400, 100);
+		render.setColor(100, 0, 12);
+		render.fillRect(50, 50, 50, 50);
 
 		//render.drawImage(render.m_fontAtlas, 0, 0, 400, 400);
 
 		render.endFrame();
 
 		
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		w.swapBuffers();
+
 	}
 
 	

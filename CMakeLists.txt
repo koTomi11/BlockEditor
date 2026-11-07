@@ -28,7 +28,8 @@ FetchContent_Declare(
     GIT_TAG        master # Vagy megadhatsz fix verziót is, pl. "1.0.1"
 )
 
-
+set(GLAD_PROFILE "compatibility" CACHE STRING "" FORCE)
+set(GLAD_API "gl=3.3" CACHE STRING "" FORCE)
 
 # 3. Letöltjük a projekt konfigurálásakor
 
@@ -82,9 +83,13 @@ endif()
 add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/map_builder/MapBuilder.h src/map_builder/MapBuilder.cpp src/map_builder/MapUtil.h
 	src/Shader.h src/Shader.cpp src/IRender2d.h src/Font.h src/Font.cpp
 	
+	src/Window.h
+	src/Window.cpp
 	
 	src/editor/Editor.h
 	src/editor/Editor.cpp
+	
+	src/IEventListener.h
 	
 	)
 	
