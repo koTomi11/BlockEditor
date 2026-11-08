@@ -16,12 +16,10 @@ void Render::initalize(int width, int height)
 	unsigned char p[3] = {255,255,255};
 	m_whiteTexture = loadImage(p, 1, 1, 3);
 
-	GLuint text = loadTexture("fasza.jpg");
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glDisable(GL_CULL_FACE);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, text);
 	
 	glGenVertexArrays(1, &m_vao);
 	glBindVertexArray(m_vao);
@@ -50,6 +48,10 @@ void Render::initalize(int width, int height)
 
 void Render::endFrame()
 {
+
+	glClearColor(0.1f, 0.3f, 0.4f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	shader->bind();
 	glBindVertexArray(m_vao);
 	glEnableVertexAttribArray(0);

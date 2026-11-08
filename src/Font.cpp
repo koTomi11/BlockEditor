@@ -38,7 +38,7 @@ Font::Font(IRender2d* r, std::string fileName)
 
 	const int atlas_width = 512;
 	const int atlas_height = 512;
-	const float font_size = 40.0f;
+	const float font_size = 12.0f;
 
 	std::vector<unsigned char> atlas_pixels(atlas_width * atlas_height, 0);
 	

@@ -81,7 +81,7 @@ if(NOT glfw_POPULATED)
 endif()
 
 add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/map_builder/MapBuilder.h src/map_builder/MapBuilder.cpp src/map_builder/MapUtil.h
-	src/Shader.h src/Shader.cpp src/IRender2d.h src/Font.h src/Font.cpp
+	src/Shader.h src/Shader.cpp src/IRender2d.h src/Font.h src/Font.cpp src/Input.h src/Input.cpp
 	
 	src/Window.h
 	src/Window.cpp

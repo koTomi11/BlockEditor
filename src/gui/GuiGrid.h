@@ -7,6 +7,9 @@ class GuiGrid : public GuiPanel
 
 public:
 
-	GuiGrid(int x, int y, int width, int height);
+	int m_gridSize;
 
+	GuiGrid(int x, int y, int width, int height);
+	
+	
 };
