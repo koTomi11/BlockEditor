@@ -59,7 +59,7 @@ public:
 	std::vector<DrawCmd> cmds;
 	std::vector<Vertex> m_vertices;
 	std::vector<unsigned int> m_indices;
-
+	int m_posX, m_posY;
 	
 
 	unsigned char m_r, m_g, m_b;
@@ -85,6 +85,7 @@ public:
 
 	 void setColor(unsigned char r, unsigned char g, unsigned char b);
 	 void setLineWidth(int s);
+	 void setPos(int x, int y);
 
 	 void endFrame();
 

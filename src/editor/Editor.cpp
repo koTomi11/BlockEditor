@@ -9,8 +9,6 @@ Editor::Editor()
 	memset(m_bitmap, 0, 64 * 64 * sizeof(BlockId));
 
 	
-
-	
 }
 
 void Editor::addBlock(int x, int y, Block block)

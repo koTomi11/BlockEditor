@@ -91,6 +91,16 @@ add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/map_builde
 	
 	src/IEventListener.h
 	
+	src/gui/GraphicsInterface.h
+	src/gui/GraphicsInterface.cpp
+	
+	src/gui/GuiItem.h
+	src/gui/GuiItem.cpp
+	src/gui/GuiPanel.h
+	src/gui/GuiPanel.cpp
+	src/gui/GuiGrid.h
+	src/gui/GuiGrid.cpp
+	
 	)
 	
 	source_group(editor FILES 
@@ -101,6 +111,17 @@ add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/map_builde
 	src/map_builder/MapBuilder.h
 	src/map_builder/MapBuilder.cpp
 	src/map_builder/MapUtil.h)
+	
+	source_group(gui FILES
+	src/gui/GraphicsInterface.h
+	src/gui/GraphicsInterface.cpp
+	src/gui/GuiItem.h
+	src/gui/GuiItem.cpp
+	src/gui/GuiPanel.h
+	src/gui/GuiPanel.cpp
+	src/gui/GuiGrid.h
+	src/gui/GuiGrid.cpp
+	)
 	
 
 target_include_directories(W3Deditor PRIVATE ${glfw_SOURCE_DIR}/include

@@ -13,6 +13,8 @@
 
 #include "Window.h"
 
+#include "gui/GraphicsInterface.h"
+
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
@@ -63,7 +65,8 @@ int main() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	
+	GraphicsInterface g;
+	w.addListener(&g);
 
 	while (!w.isClose()) {
 		
@@ -73,17 +76,9 @@ int main() {
 		glClearColor(0.1f, 0.3f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		render.drawImage(te, 50, 50, 70, 80);
-
-		render.setColor(0, 0, 0);
-		render.drawString( 0, 200, "qwertzuiasd1234");
-		
-		render.setColor(230, 23, 230);
+		g.draw(&render);
 		
 		
-		render.fillCircle(400, 400, 100);
-		render.setColor(100, 0, 12);
-		render.fillRect(50, 50, 50, 50);
 
 		//render.drawImage(render.m_fontAtlas, 0, 0, 400, 400);
 

@@ -9,7 +9,7 @@
 
 void Render::initalize(int width, int height)
 {
-
+	m_posX = 0; m_posY = 0;
 	shader = new Shader("Shader.vs", "Shader.fs");
 	shader->setProjectionMatrix(0.0f, width, height, 0.0f, -1.0f, 1.0f);
 
@@ -17,6 +17,8 @@ void Render::initalize(int width, int height)
 	m_whiteTexture = loadImage(p, 1, 1, 3);
 
 	GLuint text = loadTexture("fasza.jpg");
+
+	glDisable(GL_CULL_FACE);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, text);
@@ -100,9 +102,9 @@ void Render::drawTriangle(float x0, float y0, float x1, float y1, float x2, floa
 
 	unsigned int base = m_vertices.size();
 
-	m_vertices.push_back(Vertex(x0,y0));
-	m_vertices.push_back(Vertex(x1, y1));
-	m_vertices.push_back(Vertex(x2, y2));
+	m_vertices.push_back(Vertex(m_posX + x0, m_posY + y0));
+	m_vertices.push_back(Vertex(m_posX + x1, m_posY + y1));
+	m_vertices.push_back(Vertex(m_posX + x2, m_posY + y2));
 
 	m_indices.push_back(base + 0); 	m_indices.push_back(base + 1); 	m_indices.push_back(base + 2);
 
@@ -110,6 +112,10 @@ void Render::drawTriangle(float x0, float y0, float x1, float y1, float x2, floa
 
 void Render::fillCircle(int x, int y, int r)
 {
+
+	x += m_posX;
+	y += m_posY;
+
 	int segments = 24;
 
 	DrawCmd cmd;
@@ -151,13 +157,18 @@ void Render::fillCircle(int x, int y, int r)
 void Render::drawLine(int x0, int y0, int x1, int y1)
 {
 
+	x0 += m_posX;
+	y0 += m_posY;
+	x1 += m_posX;
+	y1 += m_posY;
+
 	float dx = x1 - x0;
 	float dy = y1 - y0;
 
 	float length = sqrtf(dx * dx + dy * dy);
 
 	float nx = -dy / length;
-	float ny = dy / length;
+	float ny = dx / length;
 
 	float offsetX = nx * (lineWidth * 0.5f);
 	float offsetY = ny * (lineWidth * 0.5f);
@@ -183,7 +194,9 @@ void Render::drawLine(int x0, int y0, int x1, int y1)
 
 void Render::drawString(int x, int y, std::string str)
 {
-	
+	x += m_posX;
+	y += m_posY;
+
 	Font font = m_fonts[0];
 
 	glm::vec2 v[4], t[4];
@@ -224,6 +237,10 @@ unsigned int Render::loadImage(std::string fileName)
 
 void Render::drawImage(int id, int x, int y, int width, int height)
 {
+
+	x += m_posX;
+	y += m_posY;
+
 	DrawCmd cmd;
 	cmd.count = 6;
 	cmd.first = m_indices.size();
@@ -245,6 +262,10 @@ void Render::drawImage(int id, int x, int y, int width, int height)
 
 void Render::fillRect(int x, int y, int width, int height)
 {
+
+	x += m_posX;
+	y += m_posY;
+
 	DrawCmd cmd;
 	cmd.count = 6;
 	cmd.first = m_indices.size();
@@ -272,6 +293,11 @@ void Render::setColor(unsigned char r, unsigned char g, unsigned char b)
 void Render::setLineWidth(int s)
 {
 	lineWidth = s;
+}
+
+void Render::setPos(int x, int y)
+{
+	m_posX = x; m_posY = y;
 }
 
 void Render::allocateBuffer(GLuint buffer, GLuint target, GLuint usage, void* data, unsigned int size)

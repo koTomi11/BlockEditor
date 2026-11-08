@@ -24,6 +24,7 @@ public:
 
 	virtual void setColor(unsigned char r, unsigned char g, unsigned char b) = 0;
 	virtual void setLineWidth(int s) = 0;
+	virtual void setPos(int x, int y) = 0;
 
 	virtual void endFrame() = 0;
 
