@@ -5,6 +5,7 @@
 #include "MapUtil.h"
 #include <vector>
 
+#define DEFAULT_TEXTURE "AAATRIGGER"
 
 class Plane
 {
@@ -59,6 +60,8 @@ public:
 		m_point3.x += x; m_point3.y += y; m_point3.z += z;
 	}
 
+	
+
 };
 
 class Brush
@@ -77,6 +80,7 @@ public:
 	void initCube(int size);
 
 	void move(int x, int y, int z);
+	
 
 };
 
@@ -87,7 +91,7 @@ public:
 
 	std::vector<Brush> brushs;
 
-	void addBlock(int x, int y);
+	void addBlock(int x, int y, int z);
 
 	void save(std::string fileName);
 

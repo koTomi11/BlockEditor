@@ -12,8 +12,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	switch (action)
 	{
-	case GLFW_PRESS:   input.mouseButton[key] = true; break;
-	case GLFW_RELEASE:  input.mouseButton[key] = false; break;
+	case GLFW_PRESS:   input.currentKeyDown[key] = true; break;
+	case GLFW_RELEASE:  input.currentKeyDown[key] = false; break;
 	}
 
 }
@@ -22,10 +22,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) 
 {
 	
-
 	input.m_mouseX = (int)xpos;
 	input.m_mouseY = (int)ypos;
-
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -44,7 +42,7 @@ void character_callback(GLFWwindow* window, unsigned int codepoint)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	std::cout << xoffset << "  " << yoffset << std::endl;
+	
 }
 
 void drop_callback(GLFWwindow* window, int count, const char** paths)
@@ -68,6 +66,7 @@ Window::Window(int width, int height)
 		
 	}
 
+	glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 	glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -102,7 +101,7 @@ Window::Window(int width, int height)
 	std::cout << "OpenGL Verzio: " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "Videokartya: " << glGetString(GL_RENDERER) << std::endl;
 
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, getWidth(), getHeight());
 
 }
 
@@ -133,4 +132,18 @@ void Window::drawBuffer(unsigned char* pixels)
 {
 	glRasterPos2f(-1, -1);
 	glDrawPixels(m_width, m_height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+}
+
+int Window::getWidth()
+{
+	int width, height;
+	glfwGetWindowSize(m_window, &width, &height);
+	return width;
+}
+
+int Window::getHeight()
+{
+	int width, height;
+	glfwGetWindowSize(m_window, &width, &height);
+	return height;
 }

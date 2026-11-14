@@ -23,23 +23,11 @@ void Render::initalize(int width, int height)
 	
 	glGenVertexArrays(1, &m_vao);
 	glBindVertexArray(m_vao);
-	glGenBuffers(1, &m_vbo);
-	glGenBuffers(1, &m_ibo);
 
-	allocateBuffer(m_vbo, GL_ARRAY_BUFFER, GL_STREAM_DRAW, nullptr, 1024 * 100);
-	allocateBuffer(m_ibo, GL_ELEMENT_ARRAY_BUFFER, GL_STREAM_DRAW, nullptr, 1024 * 10);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	glVertexAttribPointer(0, 2, GL_FLOAT, false, 20, (void*)0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, (void*)8);
-	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 20, (void*)16);
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
+	m_verticesCapacity = 2;
+	m_indicesCapacity = 2;
+	
+	allocateBuffers(m_verticesCapacity, m_indicesCapacity);
 
 	lineWidth = 2;
 	m_r = 0; m_g = 0; m_b = 0;
@@ -49,7 +37,7 @@ void Render::initalize(int width, int height)
 void Render::endFrame()
 {
 
-	glClearColor(0.1f, 0.3f, 0.4f, 1.0f);
+	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	shader->bind();
@@ -57,6 +45,25 @@ void Render::endFrame()
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+
+	bool grow = false;
+	
+	while (m_vertices.size() > m_verticesCapacity)
+	{
+		m_verticesCapacity *= 2;
+		grow = true;
+	}
+
+	while (m_indices.size() > m_indicesCapacity)
+	{
+		m_indicesCapacity *= 2;
+		grow = true;
+	}
+
+	if (grow)
+	{
+		allocateBuffers(m_verticesCapacity, m_indicesCapacity);
+	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	if (m_vertices.size() > 0)
@@ -211,8 +218,6 @@ void Render::drawString(int x, int y, std::string str)
 	cmd.texture = font.m_atlas;
 	cmds.push_back(cmd);
 
-	
-
 	for (int i=0;i<str.length();i++)
 	{
 
@@ -227,8 +232,6 @@ void Render::drawString(int x, int y, std::string str)
 		m_indices.push_back(base + 0); m_indices.push_back(base + 1); m_indices.push_back(base + 3);
 		m_indices.push_back(base + 1); m_indices.push_back(base + 2); m_indices.push_back(base + 3);
 	}
-
-	
 
 }
 
@@ -259,7 +262,6 @@ void Render::drawImage(int id, int x, int y, int width, int height)
 
 	m_indices.push_back(base + 0); m_indices.push_back(base + 1); m_indices.push_back(base + 3);
 	m_indices.push_back(base + 1); m_indices.push_back(base + 2); m_indices.push_back(base + 3);
-
 }
 
 void Render::fillRect(int x, int y, int width, int height)
@@ -304,10 +306,8 @@ void Render::setPos(int x, int y)
 
 void Render::allocateBuffer(GLuint buffer, GLuint target, GLuint usage, void* data, unsigned int size)
 {
-
 	glBindBuffer(target, buffer);
 	glBufferData(target, size, data, usage);
-
 }
 
 unsigned int Render::loadFont(std::string fileName)
@@ -357,4 +357,31 @@ GLuint Render::loadTexture(std::string fileName)
 	}
 
 	return 0;
+}
+
+void Render::deleteBuffers()
+{
+	glDeleteBuffers(1, &m_ibo);
+	glDeleteBuffers(1, &m_vbo);
+}
+
+void Render::allocateBuffers(int verticesCount, int indicesCount)
+{
+	glGenBuffers(1, &m_vbo);
+	glGenBuffers(1, &m_ibo);
+
+	allocateBuffer(m_vbo, GL_ARRAY_BUFFER, GL_STREAM_DRAW, nullptr, verticesCount * sizeof(Vertex));
+	allocateBuffer(m_ibo, GL_ELEMENT_ARRAY_BUFFER, GL_STREAM_DRAW, nullptr, indicesCount * sizeof(unsigned int));
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, false, 20, (void*)0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, false, 20, (void*)8);
+	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 20, (void*)16);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 }

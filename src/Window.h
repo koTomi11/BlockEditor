@@ -25,4 +25,6 @@ public:
 	void swapBuffers();
 	bool isClose();
 	void drawBuffer(unsigned char* pixels);
+	int getWidth();
+	int getHeight();
 };

@@ -46,13 +46,13 @@ void Brush::initCube(int size)
 	
 	float h = size / 2.0f;
 
-	planes.push_back(Plane(-h,h,h,   h,h,h,   h,-h,h,   "NONE",    1,0,0,0, 0,-1,0,0, 0,1,1));
-	planes.push_back(Plane(-h,-h,-h, h,-h,-h, h,h,-h, "NONE",      1,0,0,0, 0,-1,0,0, 0,1,1));
-	planes.push_back(Plane(-h,h,h,   -h,-h,h,   -h,-h,-h,  "NONE", 0,1,0,0, 0,0,-1,0, 0,1,1));
+	planes.push_back(Plane(-h,h,h,   h,h,h,   h,-h,h,   DEFAULT_TEXTURE,    1,0,0,0, 0,-1,0,0, 0,1,1));
+	planes.push_back(Plane(-h,-h,-h, h,-h,-h, h,h,-h, DEFAULT_TEXTURE,      1,0,0,0, 0,-1,0,0, 0,1,1));
+	planes.push_back(Plane(-h,h,h,   -h,-h,h,   -h,-h,-h, DEFAULT_TEXTURE, 0,1,0,0, 0,0,-1,0, 0,1,1));
 
-	planes.push_back(Plane(h,h,-h,  h,-h,-h, h,-h,h, "NONE",        0,1,0,0, 0,0,-1,0, 0,1,1));
-	planes.push_back(Plane(h,h,h,   -h,h,h,  -h,h,-h,  "NONE",      1,0,0,0, 0,0,-1,0, 0,1,1));
-	planes.push_back(Plane(h,-h,-h,  -h,-h,-h,  -h,-h,h, "NONE",    1,0,0,0, 0,0,-1,0, 0,1,1));
+	planes.push_back(Plane(h,h,-h,  h,-h,-h, h,-h,h, DEFAULT_TEXTURE,        0,1,0,0, 0,0,-1,0, 0,1,1));
+	planes.push_back(Plane(h,h,h,   -h,h,h,  -h,h,-h, DEFAULT_TEXTURE,      1,0,0,0, 0,0,-1,0, 0,1,1));
+	planes.push_back(Plane(h,-h,-h,  -h,-h,-h,  -h,-h,h, DEFAULT_TEXTURE,    1,0,0,0, 0,0,-1,0, 0,1,1));
 
 }
 
@@ -61,15 +61,16 @@ void Brush::move(int x, int y, int z)
 	for (Plane& p : planes)
 	{
 		p.move(x, y, z);
-
 	}
 }
 
-void MapBuilder::addBlock(int x, int y)
+
+
+void MapBuilder::addBlock(int x, int y, int z)
 {
 	Brush b;
 	b.initCube(100);
-	b.move(x, y, 0);
+	b.move(x, y, z);
 	brushs.push_back(b);
 }
 

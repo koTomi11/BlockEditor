@@ -24,27 +24,23 @@ void processInput(GLFWwindow* window) {
 int main() {
 	
 	Window w(800, 600);
-
-	
-	
-
 	Render render;
-	render.initalize(800, 600);
+	render.initalize(w.getWidth(), w.getHeight());
 
-	Editor editor;
+	Editor editor(200, 20, 1280, w.getHeight() - 40);
 	render.loadFont("JetBrainsMono-Medium.ttf");
 	
 	while (!w.isClose()) {
 		
 		w.poolEvent();
-		editor.update(&render, 0, 0, false);
+		editor.update(&render);
 
 		render.endFrame();
 		w.swapBuffers();
 
 	}
 
-	glfwTerminate();
+	//glfwTerminate();
 
 	editor.save("out.map");
 

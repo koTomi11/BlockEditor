@@ -61,6 +61,8 @@ public:
 	std::vector<unsigned int> m_indices;
 	int m_posX, m_posY;
 	
+	int m_indicesCapacity;
+	int m_verticesCapacity;
 
 	unsigned char m_r, m_g, m_b;
 	unsigned int lineWidth;
@@ -89,6 +91,9 @@ public:
 
 	 void endFrame();
 
+	 void deleteBuffers();
+	 void allocateBuffers(int verticesCount, int indicesCount);
+	
 
 private:
 

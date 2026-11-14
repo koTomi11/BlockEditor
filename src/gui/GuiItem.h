@@ -16,5 +16,6 @@ public:
 
 	virtual void draw(IRender2d* ctx);
 
+	bool mouseOn();
 
 };
