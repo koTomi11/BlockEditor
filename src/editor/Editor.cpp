@@ -29,8 +29,8 @@ void Editor::update(IRender2d* ctx)
 		int x = (input.m_mouseX - m_x) / m_gridSize;
 		int y = (input.m_mouseY - m_y) / m_gridSize;
 		
-		if (!m_blockMap->isBlock(x, y,0))
-			m_blockMap->newBlock(x, y, 0, Solid());
+		if (!m_blockMap->isBlock(x, y, m_currentLayer))
+			m_blockMap->newBlock(x, y, m_currentLayer, Solid());
 	}
 
 	if (input.currentKeyDown[GLFW_KEY_P] && mouseOn())
@@ -38,8 +38,18 @@ void Editor::update(IRender2d* ctx)
 		int x = (input.m_mouseX - m_x) / m_gridSize;
 		int y = (input.m_mouseY - m_y) / m_gridSize;
 
-		if (!m_blockMap->isBlock(x, y, 0))
-			m_blockMap->newBlock(x, y, 0, Port());
+		Port p;
+		p.m_up = true;
+		Port p2;
+		p2.m_up = false;
+
+		if (!m_blockMap->isBlock(x, y, m_currentLayer))
+		{
+			m_blockMap->newBlock(x, y, m_currentLayer, p);
+			m_blockMap->newBlock(x, y, m_currentLayer + 1, p2);
+		
+		}
+			
 	}
 
 	if (input.isMouseRightClick() && mouseOn())
@@ -47,20 +57,22 @@ void Editor::update(IRender2d* ctx)
 		int x = (input.m_mouseX - m_x) / m_gridSize;
 		int y = (input.m_mouseY - m_y) / m_gridSize;
 
-		if (!m_blockMap->isBlock(x, y, 0))
-			m_blockMap->newBlock(x, y, 0, CeilFloor());
+		if (!m_blockMap->isBlock(x, y, m_currentLayer))
+			m_blockMap->newBlock(x, y, m_currentLayer, CeilFloor());
 	}
 
-	if (input.currentKeyDown[GLFW_KEY_0])
+	if (input.currentKeyDown[GLFW_KEY_2])
 	{
 		m_currentLayer = 0;
+		
 	}
 
 	if (input.currentKeyDown[GLFW_KEY_1])
 	{
 		m_currentLayer = 1;
+		
 	}
-
+	
 
 	ctx->setColor(40, 40, 40);
 	ctx->setLineWidth(2);
@@ -82,7 +94,7 @@ void Editor::update(IRender2d* ctx)
 		for (int j = 0; j < 64; j++)
 		{
 			
-			BlockId id = m_blockMap->getBlockId(j, i, 0);
+			BlockId id = m_blockMap->getBlockId(j, i, m_currentLayer);
 
 			switch (id.objType)
 			{

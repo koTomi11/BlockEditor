@@ -53,23 +53,31 @@ public:
 
 	bool isBlock(int x, int y, int layer);
 	BlockId getBlockId(int x, int y, int layer);
+
+	Block& getBaseObject(BlockId id);
 	
+	void addToBitmap(int x, int y, int layer, BlockId id);
 	
 	void newBlock(int x, int y, int layer, Solid s)
 	{
-		int index = y * 64 + x;
-		m_bitmap[index].objType = Solid::ID;
-		m_bitmap[index].objIndex = m_solids.size();
+		BlockId id;
+		id.objIndex = m_solids.size();
+		id.objType = Solid::ID;
+		addToBitmap(x, y, layer, id);
+
 		s.m_x = x;
 		s.m_y = y;
 		m_solids.push_back(s);
+		
+		
 	}
 
 	void newBlock(int x, int y, int layer, CeilFloor s)
 	{
-		int index = y * 64 + x;
-		m_bitmap[index].objType = CeilFloor::ID;
-		m_bitmap[index].objIndex = m_cf.size();
+		BlockId id;
+		id.objIndex = m_cf.size();
+		id.objType = CeilFloor::ID;
+		addToBitmap(x, y, layer, id);
 		s.m_x = x;
 		s.m_y = y;
 		m_cf.push_back(s);
@@ -77,9 +85,10 @@ public:
 
 	void newBlock(int x, int y, int layer, Port s)
 	{
-		int index = y * 64 + x;
-		m_bitmap[index].objType = Port::ID;
-		m_bitmap[index].objIndex = m_ports.size();
+		BlockId id;
+		id.objIndex = m_ports.size();
+		id.objType = Port::ID;
+		addToBitmap(x, y, layer, id);
 		s.m_x = x;
 		s.m_y = y;
 		m_ports.push_back(s);
@@ -87,9 +96,10 @@ public:
 
 	void newBlock(int x, int y, int layer, Empty s)
 	{
-		int index = y * 64 + x;
-		m_bitmap[index].objType = Empty::ID;
-		m_bitmap[index].objIndex = m_emptys.size();
+		BlockId id;
+		id.objIndex = m_emptys.size();
+		id.objType = Empty::ID;
+		addToBitmap(x, y, layer, id);
 		s.m_x = x;
 		s.m_y = y;
 		m_emptys.push_back(s);
