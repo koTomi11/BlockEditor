@@ -3,7 +3,7 @@
 #include <memory>
 #include "../Input.h"
 #include <iostream>
-
+#include "../MapGenerator.h"
 #include <GLFW/glfw3.h>
 
 extern Input input;
@@ -11,8 +11,7 @@ extern Input input;
 Editor::Editor(int x, int y, int width, int height) : GuiPanel(x, y, width, height)
 {
 
-	m_bitmap = new BlockId[64 * 64];
-	memset(m_bitmap, 0, 64 * 64 * sizeof(BlockId));
+	m_blockMap = new BlockMap();
 
 	m_gridSize = 20;
 
@@ -30,8 +29,8 @@ void Editor::update(IRender2d* ctx)
 		int x = (input.m_mouseX - m_x) / m_gridSize;
 		int y = (input.m_mouseY - m_y) / m_gridSize;
 		
-		if (!isBlock(x, y))
-			newSolid(x, y);
+		if (!m_blockMap->isBlock(x, y,0))
+			m_blockMap->newBlock(x, y, 0, Solid());
 	}
 
 	if (input.currentKeyDown[GLFW_KEY_P] && mouseOn())
@@ -39,8 +38,8 @@ void Editor::update(IRender2d* ctx)
 		int x = (input.m_mouseX - m_x) / m_gridSize;
 		int y = (input.m_mouseY - m_y) / m_gridSize;
 
-		if (!isBlock(x, y))
-			newPort(x, y);
+		if (!m_blockMap->isBlock(x, y, 0))
+			m_blockMap->newBlock(x, y, 0, Port());
 	}
 
 	if (input.isMouseRightClick() && mouseOn())
@@ -48,8 +47,8 @@ void Editor::update(IRender2d* ctx)
 		int x = (input.m_mouseX - m_x) / m_gridSize;
 		int y = (input.m_mouseY - m_y) / m_gridSize;
 
-		if (!isBlock(x, y))
-			newCeilFloor(x, y);
+		if (!m_blockMap->isBlock(x, y, 0))
+			m_blockMap->newBlock(x, y, 0, CeilFloor());
 	}
 
 	if (input.currentKeyDown[GLFW_KEY_0])
@@ -82,7 +81,8 @@ void Editor::update(IRender2d* ctx)
 	{
 		for (int j = 0; j < 64; j++)
 		{
-			BlockId id = m_bitmap[i * 64 + j];
+			
+			BlockId id = m_blockMap->getBlockId(j, i, 0);
 
 			switch (id.objType)
 			{
@@ -98,118 +98,12 @@ void Editor::update(IRender2d* ctx)
 					break;
 
 			}
-
 		}
 	}
-
-}
-
-bool Editor::isBlock(int x, int y)
-{
-	return  m_bitmap[y * 64 + x].objType != 0;
-}
-
-BlockId Editor::getBlockId(int x, int y)
-{
-
-	BlockId id = m_bitmap[y * 64 + x];
-
-	return id;
-}
-
-void Editor::addBlock(int x, int y, Solid block)
-{
-	int index = y * 64 + x;
-	m_bitmap[index].objType = Port::ID;
-	m_bitmap[index].objIndex = m_solids.size();
-	block.m_x = x;
-	block.m_y = y;
-	m_solids.push_back(block);
-
 }
 
 void Editor::save(std::string fileName)
 {
-
-	MapBuilder map;
-
-	for (int y = 0; y < 64; y++)
-	{
-		for (int x = 0; x < 64; x++)
-		{
-
-			BlockId id = m_bitmap[y * 64 + x];
-			int blockX = x * 100;
-			int blockY = y * 100;
-
-			switch (id.objType)
-			{
-
-			case Solid::ID:
-				map.addBlock(blockX, blockY, 0);
-				break;
-
-
-			case CeilFloor::ID:
-				map.addBlock(blockX, blockY, 100);
-				map.addBlock(blockX, blockY, -100);
-				break;
-
-			case Port::ID:
-
-				Port p = m_ports[id.objIndex];
-
-				if (p.m_up)
-				{
-					map.addBlock(blockX + 100, blockY, 200);
-					map.addBlock(blockX - 100, blockY, 200);
-					map.addBlock(blockX, blockY + 100, 200);
-					map.addBlock(blockX, blockY - 100, 200);
-					map.addBlock(blockX, blockY, -100);
-				}
-				else
-				{
-					map.addBlock(blockX + 100, blockY, -200);
-					map.addBlock(blockX - 100, blockY, -200);
-					map.addBlock(blockX, blockY + 100, -200);
-					map.addBlock(blockX, blockY - 100, -200);
-					map.addBlock(blockX, blockY, 100);
-				}
-
-				break;
-
-			}
-		}
-	}
-
-	map.save(fileName);
-
-}
-
-void Editor::newSolid(int x, int y)
-{
-	int index = y * 64 + x;
-	m_bitmap[index].objType = Solid::ID;
-	m_bitmap[index].objIndex = m_solids.size();
-	m_solids.push_back(Solid());
-
-}
-
-void Editor::newCeilFloor(int x, int y)
-{
-	int index = y * 64 + x;
-	m_bitmap[index].objType = CeilFloor::ID;
-	m_bitmap[index].objIndex = m_cf.size();
-	m_cf.push_back(CeilFloor());
-}
-
-void Editor::newPort(int x, int y)
-{
-	int index = y * 64 + x;
-	m_bitmap[index].objType = Port::ID;
-	m_bitmap[index].objIndex = m_ports.size();
-
-	Port p;
-	p.m_up = true;
-	m_ports.push_back(p);
+	MapGenerator g;
+	g.generate(m_blockMap).save(fileName);
 }
