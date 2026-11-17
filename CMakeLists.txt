@@ -100,6 +100,8 @@ add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/map_builde
 	src/gui/GuiPanel.cpp
 	src/gui/GuiGrid.h
 	src/gui/GuiGrid.cpp
+	src/gui/GuiButton.h
+	src/gui/GuiButton.cpp
 	
 	)
 	
@@ -121,6 +123,8 @@ add_executable(W3Deditor src/main.cpp src/Render.h src/Render.cpp src/map_builde
 	src/gui/GuiPanel.cpp
 	src/gui/GuiGrid.h
 	src/gui/GuiGrid.cpp
+	src/gui/GuiButton.h
+	src/gui/GuiButton.cpp
 	)
 	
 

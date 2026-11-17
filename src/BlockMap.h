@@ -1,11 +1,33 @@
 #pragma once
 
 #include <vector>
+#include <string>
+
+struct attrib
+{
+	std::string key, value; 
+};
 
 struct BlockId
 {
 	unsigned short objType : 4;
 	unsigned short objIndex : 12;
+};
+
+class Entity
+{
+
+public:
+
+	int m_x, m_y, m_layout;
+	float m_offsetX, m_offsetY, m_offsetZ;
+	std::vector<attrib> m_attribs;
+
+	Entity(int x, int y, int layout)
+	{
+		m_x = x; m_y = y; m_layout = layout;
+	}
+
 };
 
 struct Block
@@ -48,6 +70,8 @@ public:
 	std::vector<CeilFloor> m_cf;
 	std::vector<Port> m_ports;
 	std::vector<Empty> m_emptys;
+	
+	std::vector<Entity> m_entityes;
 
 	BlockMap();
 

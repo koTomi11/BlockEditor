@@ -6,6 +6,8 @@
 #include "../MapGenerator.h"
 #include <GLFW/glfw3.h>
 
+#include "../gui/GuiButton.h"
+
 extern Input input;
 
 Editor::Editor(int x, int y, int width, int height) : GuiPanel(x, y, width, height)
@@ -18,104 +20,58 @@ Editor::Editor(int x, int y, int width, int height) : GuiPanel(x, y, width, heig
 	m_currentLayer = 0;
 	m_currentBlock = 1;
 	
+	m_grid = new GuiGrid(this, 300, 30, width - 300, height - 80);
+	m_grid->m_gridSize = 20;
+
+	addChild(new GuiButton(10, 10));
+
 }
 
 void Editor::update(IRender2d* ctx)
 {
 	GuiPanel::draw(ctx);
-
-	if (input.isMouseLeftClick() && mouseOn())
-	{
-		int x = (input.m_mouseX - m_x) / m_gridSize;
-		int y = (input.m_mouseY - m_y) / m_gridSize;
-		
-		if (!m_blockMap->isBlock(x, y, m_currentLayer))
-			m_blockMap->newBlock(x, y, m_currentLayer, Solid());
-	}
-
-	if (input.currentKeyDown[GLFW_KEY_P] && mouseOn())
-	{
-		int x = (input.m_mouseX - m_x) / m_gridSize;
-		int y = (input.m_mouseY - m_y) / m_gridSize;
-
-		Port p;
-		p.m_up = true;
-		Port p2;
-		p2.m_up = false;
-
-		if (!m_blockMap->isBlock(x, y, m_currentLayer))
-		{
-			m_blockMap->newBlock(x, y, m_currentLayer, p);
-			m_blockMap->newBlock(x, y, m_currentLayer + 1, p2);
-		
-		}
-			
-	}
-
-	if (input.isMouseRightClick() && mouseOn())
-	{
-		int x = (input.m_mouseX - m_x) / m_gridSize;
-		int y = (input.m_mouseY - m_y) / m_gridSize;
-
-		if (!m_blockMap->isBlock(x, y, m_currentLayer))
-			m_blockMap->newBlock(x, y, m_currentLayer, CeilFloor());
-	}
-
-	if (input.currentKeyDown[GLFW_KEY_2])
-	{
-		m_currentLayer = 0;
-		
-	}
-
-	if (input.currentKeyDown[GLFW_KEY_1])
-	{
-		m_currentLayer = 1;
-		
-	}
+	m_grid->draw(ctx);
 	
-
-	ctx->setColor(40, 40, 40);
-	ctx->setLineWidth(2);
-
-	for (int i = 0; i < 64; i++)
-	{
-		ctx->drawLine(0, i * m_gridSize, m_width, i * m_gridSize);
-	}
-
-	for (int i = 0; i < 64; i++)
-	{
-		ctx->drawLine( i * m_gridSize,0,  i * m_gridSize, m_height);
-	}
-
-	ctx->setColor(100, 100, 200);
-
-	for (int i = 0; i < 64; i++)
-	{
-		for (int j = 0; j < 64; j++)
-		{
-			
-			BlockId id = m_blockMap->getBlockId(j, i, m_currentLayer);
-
-			switch (id.objType)
-			{
-
-				case Solid::ID: ctx->setColor(50,50,50); 
-					ctx->fillRect(j * m_gridSize, i * m_gridSize, m_gridSize, m_gridSize);
-					break;
-				case CeilFloor::ID: ctx->setColor(200, 200, 200);
-					ctx->fillRect(j * m_gridSize, i * m_gridSize, m_gridSize, m_gridSize); 
-					break;
-				case Port::ID: ctx->setColor(50, 50, 200);
-					ctx->fillRect(j * m_gridSize, i * m_gridSize, m_gridSize, m_gridSize);
-					break;
-
-			}
-		}
-	}
+	
 }
 
 void Editor::save(std::string fileName)
 {
 	MapGenerator g;
 	g.generate(m_blockMap).save(fileName);
+}
+
+void Editor::onClick(int x, int y)
+{
+	if (!m_blockMap->isBlock(x, y, m_currentLayer))
+		m_blockMap->newBlock(x, y, m_currentLayer, Solid());
+}
+
+void Editor::draw(IRender2d* ctx, int x, int y, int width, int height)
+{
+	ctx->setColor(100, 100, 200);
+
+	for (int i = 0; i < 64; i++)
+	{
+		for (int j = 0; j < 64; j++)
+		{
+
+			BlockId id = m_blockMap->getBlockId(j, i, m_currentLayer);
+
+			switch (id.objType)
+			{
+
+			case Solid::ID: ctx->setColor(50, 50, 50);
+				ctx->fillRect(j * m_gridSize, i * m_gridSize, m_gridSize, m_gridSize);
+				break;
+			case CeilFloor::ID: ctx->setColor(200, 200, 200);
+				ctx->fillRect(j * m_gridSize, i * m_gridSize, m_gridSize, m_gridSize);
+				break;
+			case Port::ID: ctx->setColor(50, 50, 200);
+				ctx->fillRect(j * m_gridSize, i * m_gridSize, m_gridSize, m_gridSize);
+				break;
+
+			}
+		}
+	}
 }

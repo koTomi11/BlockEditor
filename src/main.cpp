@@ -15,6 +15,8 @@
 
 #include "gui/GraphicsInterface.h"
 
+#include "gui/GuiGrid.h"
+
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
@@ -27,14 +29,17 @@ int main() {
 	Render render;
 	render.initalize(w.getWidth(), w.getHeight());
 
-	Editor editor(200, 20, 1280, w.getHeight() - 40);
+	Editor editor(0, 0, w.getWidth(), w.getHeight());
 	render.loadFont("JetBrainsMono-Medium.ttf");
+
+	
 	
 	while (!w.isClose()) {
 		
 		w.poolEvent();
 		editor.update(&render);
 
+		
 		render.endFrame();
 		w.swapBuffers();
 
