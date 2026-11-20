@@ -33,7 +33,7 @@ public:
 struct Block
 {
 	int m_x, m_y;
-	BlockId m_next, m_prev;
+	BlockId m_next = { 0,0 }, m_prev = {0,0};
 };
 
 struct Solid : Block

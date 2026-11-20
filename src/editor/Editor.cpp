@@ -23,13 +23,25 @@ Editor::Editor(int x, int y, int width, int height) : GuiPanel(x, y, width, heig
 	m_grid = new GuiGrid(this, 300, 30, width - 300, height - 80);
 	m_grid->m_gridSize = 20;
 
-	addChild(new GuiButton(10, 10));
+	addChild(new GuiButton(10,20,"layer+",Btns_SET_LAYER_P, this));
+	addChild(new GuiButton(10, 60, "layer-", Btns_SET_LAYER_N, this));
+
+	addChild(new GuiButton(10, 100, "Solid", Btns_SET_SOLID, this));
+	addChild(new GuiButton(10, 140, "CeilFloor", Btns_SET_CEILFLOOR, this));
+	addChild(new GuiButton(10, 180, "Port", Btns_SET_PORT, this));
+
+	
+
+	
 
 }
 
 void Editor::update(IRender2d* ctx)
 {
 	GuiPanel::draw(ctx);
+	ctx->drawString(200, 50, std::to_string(m_currentLayer));
+
+
 	m_grid->draw(ctx);
 	
 	
@@ -44,7 +56,25 @@ void Editor::save(std::string fileName)
 void Editor::onClick(int x, int y)
 {
 	if (!m_blockMap->isBlock(x, y, m_currentLayer))
-		m_blockMap->newBlock(x, y, m_currentLayer, Solid());
+	{
+
+		Port p, p2;
+
+		switch (m_currentBlock)
+		{
+		case Solid::ID: m_blockMap->newBlock(x, y, m_currentLayer, Solid()); break;
+		case CeilFloor::ID: m_blockMap->newBlock(x, y, m_currentLayer, CeilFloor()); break;
+		case Port::ID: 
+			m_blockMap->newBlock(x, y, m_currentLayer, p2);
+			p.m_up = false;
+			p2.m_up = true;
+			m_blockMap->newBlock(x, y, m_currentLayer + 1, p);
+			
+			break;
+		}
+
+	}
+		
 }
 
 void Editor::draw(IRender2d* ctx, int x, int y, int width, int height)
@@ -73,5 +103,20 @@ void Editor::draw(IRender2d* ctx, int x, int y, int width, int height)
 
 			}
 		}
+	}
+}
+
+
+void Editor::buttonDown(int i)
+{
+	switch (i)
+	{
+
+	case Btns_SET_LAYER_N: m_currentLayer--; break;
+	case Btns_SET_LAYER_P: m_currentLayer++; break;
+	case Btns_SET_SOLID: m_currentBlock = Solid::ID; break;
+	case Btns_SET_CEILFLOOR: m_currentBlock = CeilFloor::ID; break;
+	case Btns_SET_PORT: m_currentBlock = Port::ID; break;
+
 	}
 }

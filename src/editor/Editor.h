@@ -6,8 +6,21 @@
 #include "../BlockMap.h"
 
 #include "../gui/GuiGrid.h"
+#include "../gui/GuiButton.h"
 
-class Editor : public GuiPanel, public IGridInterface
+enum Btns
+{
+	Btns_SET_LAYER_N,
+	Btns_SET_LAYER_P,
+
+	Btns_SET_SOLID,
+	Btns_SET_CEILFLOOR,
+	Btns_SET_PORT,
+
+};
+
+
+class Editor : public GuiPanel, public IGridInterface, public IButtonListener
 {
 
 public:
@@ -28,5 +41,7 @@ public:
 
 	void onClick(int x, int y) override;
 	void draw(IRender2d* ctx, int x, int y, int width, int height) override;
+
+	void buttonDown(int i) override;
 
 };

@@ -17,6 +17,9 @@
 
 #include "gui/GuiGrid.h"
 
+#include "gui/GuiMenuBar.h"
+#include "gui/GuiTexturedButton.h"
+
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
@@ -32,7 +35,10 @@ int main() {
 	Editor editor(0, 0, w.getWidth(), w.getHeight());
 	render.loadFont("JetBrainsMono-Medium.ttf");
 
-	
+	int t = render.loadImage("texture.jpg");
+	editor.addChild(new GuiTexturedButton(100, 600, t, 0, &editor));
+
+	GuiMenuBar mb(w.getWidth());
 	
 	while (!w.isClose()) {
 		
@@ -40,6 +46,8 @@ int main() {
 		editor.update(&render);
 
 		
+		//mb.draw(&render);
+
 		render.endFrame();
 		w.swapBuffers();
 

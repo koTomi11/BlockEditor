@@ -20,6 +20,7 @@ BlockId BlockMap::getBlockId(int x, int y, int layer)
 		while (layer != 0)
 		{
 			id = getBaseObject(id).m_prev;
+			//if (id.objType = 0) return BlockId{ 0,0 };
 			layer++;
 		}
 	}
@@ -28,6 +29,7 @@ BlockId BlockMap::getBlockId(int x, int y, int layer)
 		while (layer != 0)
 		{
 			id = getBaseObject(id).m_next;
+			//if (id.objType = 0) return BlockId{ 0,0 };
 			layer--;
 		}
 	}
