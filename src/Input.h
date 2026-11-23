@@ -12,6 +12,7 @@ public:
 	bool lastKeyDown[255];
 	bool currentKeyDown[255];
 	bool mouseButton[3];
+	bool lastMouseButton[3];
 
 	void clearTypedText();
 	std::string getText();
@@ -19,5 +20,9 @@ public:
 	bool isMouseLeftClick();
 	bool isMouseRightClick();
 	bool isMouseScroolClick();
+
+	bool isMouseLeftRelease();
+	bool isMouseRightRelease();
+	
 
 };

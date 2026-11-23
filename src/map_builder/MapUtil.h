@@ -6,6 +6,18 @@
 struct MapUtil
 {
 
+	static std::string posToString(int x, int y, int z)
+	{
+		std::string str;
+
+		 str.append(std::to_string(x)); str.append(" ");
+		str.append(std::to_string(y)); str.append(" ");
+		str.append(std::to_string(z)); 
+
+
+		return str;
+	}
+
 	static std::string pointToString(glm::vec3 point)
 	{
 		std::string str;

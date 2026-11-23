@@ -17,6 +17,13 @@ enum Btns
 	Btns_SET_CEILFLOOR,
 	Btns_SET_PORT,
 
+	Btns_PLAYER,
+	Btns_ZOMBIE,
+	Btns_HEADCRAB,
+	Btns_SOLDIER,
+
+	
+
 };
 
 
@@ -31,6 +38,8 @@ public:
 	int m_currentBlock;
 
 	int m_gridSize;
+
+	std::string m_currentEntity;
 
 	GuiGrid* m_grid;
 

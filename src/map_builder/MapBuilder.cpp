@@ -40,6 +40,21 @@ void Brush::init()
 }
 
 
+void Brush::initWall(int x, int y, int z)
+{
+	float h = x / 2.0f;
+	float h1 = y / 2.0f;
+	float h2= z / 2.0f;
+
+	planes.push_back(Plane(-h, h1, h2, h, h1, h2, h, -h1, h2, DEFAULT_TEXTURE, 1, 0, 0, 0, 0, -1, 0, 0, 0, 1, 1));
+	planes.push_back(Plane(-h, -h1, -h2, h, -h1, -h2, h, h1, -h2, DEFAULT_TEXTURE, 1, 0, 0, 0, 0, -1, 0, 0, 0, 1, 1));
+	planes.push_back(Plane(-h, h1, h2, -h, -h1, h2, -h, -h1, -h2, DEFAULT_TEXTURE, 0, 1, 0, 0, 0, 0, -1, 0, 0, 1, 1));
+
+	planes.push_back(Plane(h, h1, -h2, h, -h1, -h2, h, -h1, h2, DEFAULT_TEXTURE, 0, 1, 0, 0, 0, 0, -1, 0, 0, 1, 1));
+	planes.push_back(Plane(h, h1, h2, -h, h1, h2, -h, h1, -h2, DEFAULT_TEXTURE, 1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 1));
+	planes.push_back(Plane(h, -h1, -h2, -h, -h1, -h2, -h, -h1, h2, DEFAULT_TEXTURE, 1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 1));
+}
+
 
 void Brush::initCube(int size)
 {
@@ -69,15 +84,23 @@ void Brush::move(int x, int y, int z)
 void MapBuilder::addBlock(int x, int y, int z)
 {
 	Brush b;
-	b.initCube(100);
+	b.initCube(128);
+	//b.initWall(10, 128, 128);
 	b.move(x, y, z);
 	brushs.push_back(b);
+}
+
+void MapBuilder::addEntity(int x, int y, int z, std::string name)
+{
+	MapEntity e;
+	e.addAttrib("origin", MapUtil::posToString(x, y, z));
+	e.addAttrib("classname", name);
+	entities.push_back(e);
 }
 
 void MapBuilder::save(std::string fileName)
 {
 	
-
 	std::string path("F:\\Users\\asdf\\Desktop\\");
 	path.append(fileName);
 
@@ -89,7 +112,9 @@ void MapBuilder::save(std::string fileName)
 		file << "{\n";
 		file << MapUtil::stringPairToString("classname", "worldspawn") << "\n";
 		file << MapUtil::stringPairToString("mapversion", "220") << "\n";
-		file << MapUtil::stringPairToString("wad", "\\hammer\\tools\\zhlt\\zhlt.wad;\\hammer\\tools\\zhlt\\map.wad") << "\n";
+		file << MapUtil::stringPairToString("wad", "C:\\wads\\halflife.wad") << "\n";
+		
+	
 
 		for (int i = 0; i < brushs.size(); i++)
 		{
@@ -97,6 +122,21 @@ void MapBuilder::save(std::string fileName)
 		}
 
 		file << "}\n";
+
+
+		for (MapEntity e : entities)
+		{
+
+			file << "{\n";
+
+			for (std::string s : e.attribs)
+			{
+				file << s << "\n";
+			}
+
+			file << "}\n";
+		}
+		
 		
 		file.close();
 	}

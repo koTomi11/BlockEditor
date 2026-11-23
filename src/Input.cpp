@@ -24,3 +24,13 @@ bool Input::isMouseScroolClick()
 {
 	return mouseButton[2];
 }
+
+bool Input::isMouseLeftRelease()
+{
+	return false;
+}
+
+bool Input::isMouseRightRelease()
+{
+	return false;
+}

@@ -3,33 +3,36 @@
 
 MapBuilder MapGenerator::generate(BlockMap* blocks)
 {
-	MapBuilder map;
+
+	for (Entity e : blocks->m_entityes)
+	{
+		m_map.addEntity(e.m_x * SIZE, e.m_y * SIZE, e.m_layer * SIZE * 3, e.m_type);
+	}
 
 	for (int y = 0; y < 64; y++)
 	{
 		for (int x = 0; x < 64; x++)
 		{
-
 			for (int l = -2; l < 4; l++)
 			{
 
 				BlockId id = blocks->getBlockId(x, y, l);
 				if (id.objType == 0) continue;
 
-				int blockX = x * 100;
-				int blockY = y * 100;
+				int blockX = x * SIZE;
+				int blockY = y * SIZE;
 
 				switch (id.objType)
 				{
 
 				case Solid::ID:
-					map.addBlock(blockX, blockY, 0 + l * 300);
+					m_map.addBlock(blockX, blockY, 0 + l * SIZE * 3);
 					break;
 
 
 				case CeilFloor::ID:
-					map.addBlock(blockX, blockY, 100 + l * 300);
-					map.addBlock(blockX, blockY, -100 + l * 300);
+					m_map.addBlock(blockX, blockY, SIZE + l * SIZE * 3);
+					m_map.addBlock(blockX, blockY, -SIZE + l * SIZE * 3);
 					break;
 
 				case Port::ID:
@@ -38,19 +41,19 @@ MapBuilder MapGenerator::generate(BlockMap* blocks)
 
 					if (p.m_up)
 					{
-						map.addBlock(blockX + 100, blockY, 200 + l * 300);
-						map.addBlock(blockX - 100, blockY, 200 + l * 300);
-						map.addBlock(blockX, blockY + 100, 200 + l * 300);
-						map.addBlock(blockX, blockY - 100, 200 + l * 300);
-						map.addBlock(blockX, blockY, -100 + l * 300);
+						m_map.addBlock(blockX + SIZE, blockY, SIZE * 2 + l * SIZE * 3);
+						m_map.addBlock(blockX - SIZE, blockY, SIZE * 2 + l * SIZE * 3);
+						m_map.addBlock(blockX, blockY + SIZE, SIZE * 2 + l * SIZE * 3);
+						m_map.addBlock(blockX, blockY - SIZE, SIZE * 2 + l * SIZE * 3);
+						m_map.addBlock(blockX, blockY, -SIZE + l * SIZE * 3);
 					}
 					else
 					{
-						map.addBlock(blockX + 100, blockY, -200 + l * 300);
-						map.addBlock(blockX - 100, blockY, -200 + l * 300);
-						map.addBlock(blockX, blockY + 100, -200 + l * 300);
-						map.addBlock(blockX, blockY - 100, -200 + l * 300);
-						map.addBlock(blockX, blockY, 100 + l * 300);
+						m_map.addBlock(blockX + SIZE, blockY, -SIZE * 2 + l * SIZE * 3);
+						m_map.addBlock(blockX - SIZE, blockY, -SIZE * 2 + l * SIZE * 3);
+						m_map.addBlock(blockX, blockY + SIZE, -SIZE * 2 + l * SIZE * 3);
+						m_map.addBlock(blockX, blockY - SIZE, -SIZE * 2 + l * SIZE * 3);
+						m_map.addBlock(blockX, blockY, SIZE + l * SIZE * 3);
 					}
 
 					break;
@@ -60,5 +63,5 @@ MapBuilder MapGenerator::generate(BlockMap* blocks)
 		}
 
 	}
-		return map;
+		return m_map;
 	}

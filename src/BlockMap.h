@@ -19,13 +19,15 @@ class Entity
 
 public:
 
-	int m_x, m_y, m_layout;
+
+	int m_x, m_y, m_layer;
 	float m_offsetX, m_offsetY, m_offsetZ;
 	std::vector<attrib> m_attribs;
+	std::string m_type;
 
-	Entity(int x, int y, int layout)
+	Entity(int x, int y, int layer)
 	{
-		m_x = x; m_y = y; m_layout = layout;
+		m_x = x; m_y = y; m_layer = layer;
 	}
 
 };
@@ -53,11 +55,18 @@ struct Port : Block
 	bool m_up;
 };
 
+struct Wall : Block
+{
+	enum {ID = 4};
+	bool vertical;
+};
 
 struct Empty : Block
 {
 	enum {ID = 4};
 };
+
+
 
 
 class BlockMap
@@ -127,6 +136,11 @@ public:
 		s.m_x = x;
 		s.m_y = y;
 		m_emptys.push_back(s);
+	}
+
+	void newWall(int x, int y, int layer, Wall w)
+	{
+
 	}
 
 };

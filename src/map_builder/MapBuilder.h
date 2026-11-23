@@ -5,7 +5,7 @@
 #include "MapUtil.h"
 #include <vector>
 
-#define DEFAULT_TEXTURE "AAATRIGGER"
+#define DEFAULT_TEXTURE "C2A1_W1A"
 
 class Plane
 {
@@ -64,12 +64,25 @@ public:
 
 };
 
-class Brush
+
+class MapEntity
 {
 
 public:
 
-	
+	std::vector<std::string> attribs;
+
+	void addAttrib(std::string key, std::string value)
+	{
+		attribs.push_back(MapUtil::stringPairToString(key, value));
+	}
+
+};
+
+class Brush
+{
+
+public:
 
 	std::vector<Plane> planes;
 
@@ -78,6 +91,7 @@ public:
 	std::string toString();
 
 	void initCube(int size);
+	void initWall(int x, int y, int z);
 
 	void move(int x, int y, int z);
 	
@@ -90,6 +104,9 @@ class MapBuilder
 public:
 
 	std::vector<Brush> brushs;
+	std::vector<MapEntity> entities;
+
+	void addEntity(int x, int y, int z, std::string name);
 
 	void addBlock(int x, int y, int z);
 

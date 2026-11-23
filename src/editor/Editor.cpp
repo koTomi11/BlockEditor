@@ -30,8 +30,12 @@ Editor::Editor(int x, int y, int width, int height) : GuiPanel(x, y, width, heig
 	addChild(new GuiButton(10, 140, "CeilFloor", Btns_SET_CEILFLOOR, this));
 	addChild(new GuiButton(10, 180, "Port", Btns_SET_PORT, this));
 
-	
+	addChild(new GuiButton(10, 260, "player", Btns_PLAYER, this));
+	addChild(new GuiButton(10, 300, "zombie", Btns_ZOMBIE, this));
+	addChild(new GuiButton(10, 340, "soldier", Btns_SOLDIER, this));
+	addChild(new GuiButton(10, 380, "headcrab", Btns_HEADCRAB, this));
 
+	
 	
 
 }
@@ -55,30 +59,56 @@ void Editor::save(std::string fileName)
 
 void Editor::onClick(int x, int y)
 {
+
+
+
+	if (m_currentBlock == 100)
+	{
+		bool v = true;
+		for (Entity e : m_blockMap->m_entityes)
+		{
+			if (e.m_x == x && e.m_y == y)
+			{
+				v = false;
+			}
+		}
+
+		if (v)
+		{
+			Entity e(x, y, m_currentLayer);
+			e.m_type = m_currentEntity;
+			m_blockMap->m_entityes.push_back(e);
+
+		}
+	}
+
+
 	if (!m_blockMap->isBlock(x, y, m_currentLayer))
 	{
 
-		Port p, p2;
+			Port p, p2;
 
-		switch (m_currentBlock)
-		{
-		case Solid::ID: m_blockMap->newBlock(x, y, m_currentLayer, Solid()); break;
-		case CeilFloor::ID: m_blockMap->newBlock(x, y, m_currentLayer, CeilFloor()); break;
-		case Port::ID: 
-			m_blockMap->newBlock(x, y, m_currentLayer, p2);
-			p.m_up = false;
-			p2.m_up = true;
-			m_blockMap->newBlock(x, y, m_currentLayer + 1, p);
+			switch (m_currentBlock)
+			{
+			case Solid::ID: m_blockMap->newBlock(x, y, m_currentLayer, Solid()); break;
+			case CeilFloor::ID: m_blockMap->newBlock(x, y, m_currentLayer, CeilFloor()); break;
+			case Port::ID: 
+				m_blockMap->newBlock(x, y, m_currentLayer, p2);
+				p.m_up = false;
+				p2.m_up = true;
+				m_blockMap->newBlock(x, y, m_currentLayer + 1, p);
 			
-			break;
-		}
+				break;
 
+		
+					
+			}
+		}
 	}
 		
-}
-
 void Editor::draw(IRender2d* ctx, int x, int y, int width, int height)
 {
+	
 	ctx->setColor(100, 100, 200);
 
 	for (int i = 0; i < 64; i++)
@@ -87,6 +117,8 @@ void Editor::draw(IRender2d* ctx, int x, int y, int width, int height)
 		{
 
 			BlockId id = m_blockMap->getBlockId(j, i, m_currentLayer);
+
+			
 
 			switch (id.objType)
 			{
@@ -104,11 +136,40 @@ void Editor::draw(IRender2d* ctx, int x, int y, int width, int height)
 			}
 		}
 	}
+
+
+	for (Entity e : m_blockMap->m_entityes)
+	{
+		if (m_currentLayer == e.m_layer)
+		{
+			if (e.m_type.compare("info_player_start") == 0)
+			{
+				ctx->setColor(10, 10, 200);
+			}
+			else if (e.m_type.compare("monster_human_grunt") == 0)
+			{
+				ctx->setColor(200, 10, 10);
+			}
+			else if (e.m_type.compare("monster_zombie") == 0)
+			{
+				ctx->setColor(200, 100, 10);
+			}
+			else if (e.m_type.compare("monster_headcrab") == 0)
+			{
+				ctx->setColor(100, 100, 10);
+			}
+
+			ctx->fillCircle(m_gridSize * e.m_x + 10, m_gridSize * e.m_y + 10, 10);
+		}
+	}
+
 }
 
 
 void Editor::buttonDown(int i)
 {
+
+	m_currentEntity.clear();
 	switch (i)
 	{
 
@@ -117,6 +178,11 @@ void Editor::buttonDown(int i)
 	case Btns_SET_SOLID: m_currentBlock = Solid::ID; break;
 	case Btns_SET_CEILFLOOR: m_currentBlock = CeilFloor::ID; break;
 	case Btns_SET_PORT: m_currentBlock = Port::ID; break;
+	
+	case Btns_PLAYER: m_currentEntity = "info_player_start";  m_currentBlock = 100; break;
+	case Btns_ZOMBIE: m_currentEntity = "monster_zombie"; m_currentBlock = 100; break;
+	case Btns_HEADCRAB: m_currentEntity = "monster_headcrab"; m_currentBlock = 100; break;
+	case Btns_SOLDIER: m_currentEntity = "monster_human_grunt"; m_currentBlock = 100; break;
 
 	}
 }

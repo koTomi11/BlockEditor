@@ -38,7 +38,6 @@ int main() {
 	int t = render.loadImage("texture.jpg");
 	editor.addChild(new GuiTexturedButton(100, 600, t, 0, &editor));
 
-	GuiMenuBar mb(w.getWidth());
 	
 	while (!w.isClose()) {
 		
